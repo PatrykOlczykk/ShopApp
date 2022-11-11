@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{{ product }}</h1>
+    <div class="alert-warning">
+    <ul class="list-group">
+        <li class="list-group-item">Składniki: {{ product.toppings }}</li>
+        <li class="list-group-item">Cena {{ product.price }}</li>
+        <li class="list-group-item">Opis: {{ product.description }}</li>
+        <li class="list-group-item">Ocena: {{ product.votes }}</li>
+    </ul>
+    </div>
+        <p>
+    <form method="post" action="{% url 'add_comment' product.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit">
+    </form>
+    </p>
+    <ul class="list-group">
+        {% for comment in product.comment_set.all %}
+            <li class="list-group-item">{{ comment.text }}</li>
+            <li class="list-group-item">{{ comment.vote }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
