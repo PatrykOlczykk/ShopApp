@@ -9,6 +9,7 @@
         <li class="list-group-item">Ocena: {{ product.votes }}</li>
     </ul>
     </div>
+    <H2>Dodaj swój komentarz!</H2>
         <p>
     <form method="post" action="{% url 'add_comment' product.id %}">
         {% csrf_token %}
@@ -16,10 +17,16 @@
         <input type="submit">
     </form>
     </p>
+    <H6 >Komentarze innych użytkowników</H6>
     <ul class="list-group">
         {% for comment in product.comment_set.all %}
-            <li class="list-group-item">{{ comment.text }}</li>
-            <li class="list-group-item">{{ comment.vote }}</li>
+            <li class="list-group-item">
+            <h6>{{ comment.author }}</h6>
+            <p>Komentarz: {{ comment.text }}</p>
+            <p>Ocena: {{ comment.vote }}</p>
+            <p>{{ comment.created }}</p>
+            </li>
+
         {% endfor %}
     </ul>
 

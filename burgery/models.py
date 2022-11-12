@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 
+
 class Product(models.Model):
     name = models.CharField(max_length=64, unique=True)
     toppings = models.TextField()
@@ -19,11 +20,11 @@ class Product(models.Model):
 
 class Comment(models.Model):
     choices = [
-        (1, '1'),
-        (2, '2'),
-        (3, '3'),
-        (4, '4'),
-        (5, '5')
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ("5", '5')
     ]
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -34,4 +35,3 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.author}"
-
