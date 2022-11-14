@@ -15,17 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from burgery.views import ShowAllProducts, AddProduct, LoginView, LogoutView, RegisterUserView, ShowDetailView, AddCommentView
+from Shop import views
 from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='base.html'), name='index'),
-    path('menu/', ShowAllProducts.as_view(), name='menu'),
-    path('add_product/', AddProduct.as_view(), name='add_product'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('register/', RegisterUserView.as_view(), name='register'),
-    path('product/<int:pk>/', ShowDetailView.as_view(), name='detail_product'),
-    path('add_comment/<int:product_pk>/', AddCommentView.as_view(), name='add_comment'),
+    path('show_all_products/', views.ShowAllProducts.as_view(), name='show_all_products'),
+    path('add_product/', views.AddProduct.as_view(), name='add_product'),
+    path('login/', views.LoginView.as_view(), name='login'),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
+    path('register/', views.RegisterUserView.as_view(), name='register'),
+    path('detail_product/<int:pk>/', views.ShowDetailView.as_view(), name='detail_product'),
+    path('add_comment/<int:pk>/', views.AddCommentView.as_view(), name='add_comment'),
+    path('delate_product/<int:pk>/', views.DelateProductView.as_view(), name='delate_product'),
+    path('confirm_delate_product/<int:pk>/', views.ConfirmDelateProductView.as_view(), name='confirm_delate_product'),
+    path('delate_product/<int:pk>/', views.DelateCommentView.as_view(), name='delate_comment'),
+    path('confirm_delate_comment/<int:pk>/', views.ConfirmDelateComment.as_view(), name='confirm_delate_comment'),
 ]

@@ -1,7 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-
-from burgery.models import Product, Comment
+from Shop.models import Product, Comment
 from django.contrib.auth.models import User
 
 

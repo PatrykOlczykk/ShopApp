@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="room_form">
+    dupa
+    <form action="" method="POST">
+        {% csrf_token %}
+        Are you sure you want to delete the comment for
+        <p><b>?</b></p>
+        <div class="form_submit">
+            <button type="submit" class="button">Yes, delete the comment!</button>
+        <p><a href="{% url 'detail_product' product.id %}" class="button">Back </a></p>
+        </div>
+    </form>
+    </div>
+{% endblock %}

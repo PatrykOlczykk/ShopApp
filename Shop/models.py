@@ -5,11 +5,9 @@ from django.urls import reverse
 
 class Product(models.Model):
     name = models.CharField(max_length=64, unique=True)
-    toppings = models.TextField()
     price = models.DecimalField(max_digits=999, decimal_places=2)
     sale = models.BooleanField(default=False)
     description = models.TextField()
-    votes = models.PositiveIntegerField()
 
     def __str__(self):
         return f'{self.name}'
@@ -20,17 +18,17 @@ class Product(models.Model):
 
 class Comment(models.Model):
     choices = [
-        ('1', '1'),
-        ('2', '2'),
-        ('3', '3'),
-        ('4', '4'),
-        ("5", '5')
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5')
     ]
 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
-    vote = models.CharField(max_length=5, choices=choices)
+    vote = models.IntegerField(choices=choices)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     def __str__(self):

@@ -3,31 +3,17 @@
     <h1>{{ product }}</h1>
     <div class="alert-warning">
     <ul class="list-group">
-        <li class="list-group-item">Składniki: {{ product.toppings }}</li>
         <li class="list-group-item">Cena {{ product.price }}</li>
         <li class="list-group-item">Opis: {{ product.description }}</li>
-        <li class="list-group-item">Ocena: {{ product.votes }}</li>
+        {% if  product_score  == 0 %}
+            <li class="list-group-item">Brak ocen</li>
+        {% else %}
+            <li class="list-group-item">Ocena użytkowników: {{ product_score }}</li>
+        {% endif %}
     </ul>
     </div>
-    <H2>Dodaj swój komentarz!</H2>
-        <p>
-    <form method="post" action="{% url 'add_comment' product.id %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit">
-    </form>
-    </p>
-    <H6 >Komentarze innych użytkowników</H6>
-    <ul class="list-group">
-        {% for comment in product.comment_set.all %}
-            <li class="list-group-item">
-            <h6>{{ comment.author }}</h6>
-            <p>Komentarz: {{ comment.text }}</p>
-            <p>Ocena: {{ comment.vote }}</p>
-            <p>{{ comment.created }}</p>
-            </li>
-
-        {% endfor %}
-    </ul>
-
+    {% if 'Shop.delate_product' in perms %}
+            <a href="{% url 'confirm_delate_product' product.id %}" class="btn btn-danger">Delate product</a>
+    {% endif %}
+    {% include 'comments.html' %}
 {% endblock %}
