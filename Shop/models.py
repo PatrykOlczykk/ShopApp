@@ -7,15 +7,19 @@ from multiselectfield import MultiSelectField
 class Product(models.Model):
 
     tag_choices = (
-        ('1', 'Running'),
-        ('2', 'Lifestyle'),
-        ('3', 'heels'),
-        ('4', 'winter shoes'),
-        ('4', 'winter'),
-        ('4', 'winter'),
-        ('4', 'wier'),
-        ('4', 'winter'),
-        ('5', 'other shoes'),
+        (1, 'women’s shoes'),
+        (2, 'men’s shoes'),
+        (3, 'unisex shoes'),
+        (4, 'kids’ shoes'),
+        (5, 'lifestyle'),
+        (6, 'sneakers'),
+        (7, 'winter shoes'),
+        (8, 'dress shoes'),
+        (9, 'flip-flops'),
+        (10, 'sandals'),
+        (11, 'running'),
+        (12, 'shoes for other sports'),
+        (13, 'other shoes'),
     )
 
     color_choices = [
@@ -31,30 +35,23 @@ class Product(models.Model):
     ]
 
     size_choices = (
-        ('1', '38'),
-        ('2', '39'),
-        ('3', '40'),
-        ('4', '41'),
-        ('5', '42'),
-        ('6', '43'),
-        ('7', '44'),
-        ('8', '45'),
+        (1, '38'),
+        (2, '39'),
+        (3, '40'),
+        (4, '41'),
+        (5, '42'),
+        (6, '43'),
+        (7, '44'),
+        (8, '45'),
     )
-
-    gender_choices = [
-        (1, 'male'),
-        (2, 'female'),
-        (3, 'unisex'),
-    ]
 
     name = models.CharField(max_length=64, unique=True)
     price = models.DecimalField(max_digits=999, decimal_places=2)
     sale = models.BooleanField(default=False)
     description = models.TextField()
-    tags = MultiSelectField(choices=tag_choices)
+    tags = MultiSelectField(max_length=49, max_choices=13, choices=tag_choices)
     color = models.IntegerField(choices=color_choices)
-    available_size = MultiSelectField(choices=size_choices)
-    gender = models.IntegerField(choices=gender_choices)
+    available_size = MultiSelectField(max_length=49, max_choices=8, choices=size_choices)
 
     def __str__(self):
         return f'{self.name}'

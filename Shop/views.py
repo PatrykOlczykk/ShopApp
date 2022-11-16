@@ -100,7 +100,6 @@ class ShowDetailView(View):
             product_score += comment.vote
         if product_score != 0 :
             product_score = product_score/comments.count()
-
         return render(request, 'detail_product.html', {'product': product, 'form': form, 'product_score': product_score})
 
 
