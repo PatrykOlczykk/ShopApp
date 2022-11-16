@@ -1,11 +1,11 @@
 <H2>Dodaj swój komentarz!</H2>
-        <p>
+<p>
     <form method="post" action="{% url 'add_comment' product.id %}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit">
     </form>
-    </p>
+</p>
     <H6 >Komentarze innych użytkowników</H6>
     <ul class="list-group">
         {% for comment in product.comment_set.all %}
@@ -14,10 +14,10 @@
             <p>Komentarz: {{ comment.text }}</p>
             <p>Ocena: {{ comment.vote }}</p>
             <p>{{ comment.created }}</p>
-            <p><a href="{% url 'confirm_delate_comment' comment.id %}" class="btn btn-danger">Delate comment</a>
-</p>
+                {% if request.user == comment.author %}
+                    <p><a href="{% url 'confirm_delate_comment' comment.id %}"
+                    class="btn btn-danger">Delate comment</a></p>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
-
-</form>

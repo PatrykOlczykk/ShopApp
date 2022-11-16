@@ -32,4 +32,5 @@ urlpatterns = [
     path('confirm_delate_product/<int:pk>/', views.ConfirmDelateProductView.as_view(), name='confirm_delate_product'),
     path('delate_product/<int:pk>/', views.DelateCommentView.as_view(), name='delate_comment'),
     path('confirm_delate_comment/<int:pk>/', views.ConfirmDelateComment.as_view(), name='confirm_delate_comment'),
+    path('edit_product/<int:pk>', views.EditProduct.as_view(), name='edit_product')
 ]

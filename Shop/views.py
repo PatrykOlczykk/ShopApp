@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
 from Shop.models import Product, Comment
@@ -18,7 +18,7 @@ class ShowAllProducts(View):
 class AddProduct(PermissionRequiredMixin, View):
     permission_required = ['Shop.add_product']
 
-    def get(self,request):
+    def get(self, request):
         form = AddNewProductForm()
         return render(request, 'form.html', {'form': form})
 
@@ -56,7 +56,7 @@ class LoginView(View):
         form = LoginForm(request.POST)
         message = ''
         if form.is_valid():
-            username= form.cleaned_data['username']
+            username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(username=username, password=password)
             if user is not None:
@@ -123,22 +123,45 @@ class ConfirmDelateProductView(PermissionRequiredMixin, View):
         product.delete()
         return redirect('show_all_products')
 
+
 class DelateCommentView(View):
 
     def get(self, request, pk):
         return redirect(f'/confirm_delate_comment/{pk}')
 
+
 class ConfirmDelateComment(View):
 
     def get(self, request, pk):
         comment = Comment.objects.get(pk=pk)
-        product = Product.objects.get(comment=comment)
         if request.user == comment.author:
-            comment.author = True
-            return render(request, 'confirm_delate_comment.html', {'comment': comment, 'product': product, 'comment_author': comment.author})
+            product = Product.objects.get(comment=comment)
+            return render(request, 'confirm_delate_comment.html', {'comment': comment, 'product': product})
+        else:
+            return redirect('index')
 
     def post(self, request, pk):
         comment = Comment.objects.get(pk=pk)
         comment.delete()
         product = Product.objects.get(comment=comment)
         return redirect(f'/detail_product/{product.pk}')
+
+class EditProduct(PermissionRequiredMixin, View):
+    permission_required = ['Shop.add_product']
+
+    def get(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        form = AddNewProductForm()
+        message = f"You're editing {product}"
+        return render(request, 'form.html', {'message': message, 'form': form})
+
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        form = AddNewProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect(f'/detail_product/{product.pk}')
+
+
+
+
