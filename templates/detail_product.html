@@ -5,19 +5,32 @@
     <ul class="list-group">
         <li class="list-group-item">Cena {{ product.price }}</li>
         <li class="list-group-item">Opis: {{ product.description }}</li>
-        <li class="list-group-item">Tags: {{ product.tags }}</li>
-        <li class="list-group-item">Available sizes: {{ product.available_size }}</li>
+        <li class="list-group-item">Tags:
+        {% for tag in product.tags.all %}
+            {{ tag.name }}
+        {% endfor %} </li>
+        <li class="list-group-item">Available size:
+        {% for available_size in product.available_size.all %}
+            {{ available_size.size }}
+        {% endfor %} </li>
         <li class="list-group-item">Color: {{ product.color }}</li>
         {% if  product_score  == 0 %}
             <li class="list-group-item">Brak ocen</li>
         {% else %}
             <li class="list-group-item">Ocena użytkowników: {{ product_score }}</li>
         {% endif %}
+    <a href="{% url 'confirm_delate_product' product.id %}" class="btn btn-danger">Delate product</a>
     </ul>
     </div>
-    {% if 'Shop.delate_product' in perms %}
+    <div>
+        {% if product.product_image %}
+        <img src="{{ product.product_image.url }}" width="500">
+        {% endif %}
+    </div>
+    </div>
+    {% if 'Shop_app.delate_product' in perms %}
             <a href="{% url 'confirm_delate_product' product.id %}" class="btn btn-danger">Delate product</a>
             <a href="{% url 'edit_product' product.id %}" class="btn btn-secondary">Edit product</a>
     {% endif %}
     {% include 'comments.html' %}
-{% endblock %}
+    {% endblock %}

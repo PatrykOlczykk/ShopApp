@@ -14,7 +14,7 @@
       <li class="nav-item">
         <a class="nav-link active" href="{% url 'show_all_products' %}">Shop</a>
       </li>
-    {% if 'Shop.add_product' in perms %}
+    {% if 'Shop_app.add_product' in perms %}
      <li class="nav-item">
         <a class="nav-link" href="{% url 'add_product' %}">AddProduct</a>
       </li>
@@ -31,6 +31,10 @@
             <a class="nav-link" href="{% url 'register' %}">Register</a>
         </li>
     {% endif %}
+    <li class="nav-item">
+        <a class="nav-link active" href="{% url 'about_me' %}">Read about Me!</a>
+    </li>
+
     </ul>
   </div>
 </nav>
@@ -39,5 +43,8 @@
 {% endblock %}
 </div>
 <p>{{ date }}</p>
+    <li class="nav-item">
+        <a class="nav-link active" href="https://github.com/PatrykOlczykk"><img src="{% static 'github.png' %}" width="200" target ="_blank"></a>
+    </li>
 </body>
 </html>
