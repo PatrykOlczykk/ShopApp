@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Product, Categories, Sizes, Colors
+from .models import Product, Category, Size, Color
 
 admin.site.register(Product)
-admin.site.register(Categories)
-admin.site.register(Sizes)
-admin.site.register(Colors)
+admin.site.register(Category)
+admin.site.register(Size)
+admin.site.register(Color)
 # Register your models here.

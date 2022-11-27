@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-    <ul class="list-group">
-    {% include 'list.html' with objects=product %}
-    </ul>
+    {% for product in product %}
+        <li class="list-group-item"><a href="{{ product.get_absolute_url }}"> {{ product }}</a>
+            <button data-product={{product.id}} data-action="add" class ="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+            <a>{{product.price}}</a>
+            {% if product.product_image %}
+            <img src="{{ product.product_image.url }}" width="50">
+            {% endif %}
+        </li>
+    {% endfor %}
 {% endblock %}

@@ -1,4 +1,4 @@
-{% load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +6,7 @@
     <title>Title</title>
     <link href="{% static 'bootstrap-5.2.2-dist/css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
     <script src="{% static 'bootstrap-5.2.2-dist/js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
  <nav class="navbar navbar-expand-sm bg-light navbar-light">
@@ -16,7 +17,7 @@
       </li>
     {% if 'Shop_app.add_product' in perms %}
      <li class="nav-item">
-        <a class="nav-link" href="{% url 'add_product' %}">AddProduct</a>
+        <a class="nav-link" href="{% url 'add' %}">Add something</a>
       </li>
     {% endif %}
     {% if user.is_authenticated %}
@@ -42,9 +43,10 @@
 {% block content %}
 {% endblock %}
 </div>
-<p>{{ date }}</p>
-    <li class="nav-item">
-        <a class="nav-link active" href="https://github.com/PatrykOlczykk"><img src="{% static 'github.png' %}" width="200" target ="_blank"></a>
-    </li>
+
+<script type="text/javascript" src=" {% static 'js/cart.js' %}"></script>
+<div class="footer">
+        <a class="nav-link active" href="https://github.com/PatrykOlczykk"><img src="{% static 'images/github.png' %}" width="200" target ="_blank"></a>
+        <a class="nav-link active" href="https://github.com/PatrykOlczykk"><img src="{% static 'images/Linkedin.png' %}" width="200" target ="blank"></a>
+</div>
 </body>
-</html>

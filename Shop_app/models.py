@@ -3,23 +3,25 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 
-class Categories(models.Model):
-    name = models.CharField(max_length=24)
+class Category(models.Model):
+    name = models.CharField(max_length=24, unique=True)
 
     def __str__(self):
         return self.name
 
-class Sizes(models.Model):
-    size = models.IntegerField()
+
+class Size(models.Model):
+    size = models.IntegerField(unique=True)
 
     def __str__(self):
         return f'{self.size}'
 
-class Colors(models.Model):
-    color = models.CharField(max_length=24)
+
+class Color(models.Model):
+    name = models.CharField(max_length=24, unique=True)
 
     def __str__(self):
-        return self.color
+        return self.name
 
 
 class Product(models.Model):
@@ -28,9 +30,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=999, decimal_places=2)
     sale = models.BooleanField(default=False)
     description = models.TextField()
-    tags = models.ManyToManyField(Categories)
-    color = models.ForeignKey(Colors, on_delete=models.CASCADE)
-    available_size = models.ManyToManyField(Sizes)
+    tags = models.ManyToManyField(Category)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE)
+    available_size = models.ManyToManyField(Size)
     product_image = models.ImageField(null=True, blank=True, upload_to='images/')
 
     def __str__(self):

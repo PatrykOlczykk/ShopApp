@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
 from Shop_app.models import Product, Comment
-from Shop_app.forms import AddNewProductForm, RegisterNewUserForm, LoginForm, AddCommentForm
+from Shop_app.forms import AddNewProductForm, RegisterNewUserForm, LoginForm, AddCommentForm, AddSizeForm, AddColorForm, AddCategoryForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import User
@@ -42,7 +42,7 @@ class RegisterUserView(View):
             u = form.save(commit=False)
             u.set_password(form.cleaned_data['password'])
             u.save()
-            return redirect('index')
+            return redirect('/')
         return render(request, 'form.html', {'form': form})
 
 
@@ -61,7 +61,7 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('index')
+                return redirect('/')
             message = 'niepoprawne haslo lub/i login'
             return render(request, 'form.html', {'form': form, 'message': message})
 
@@ -70,7 +70,7 @@ class LogoutView(View):
 
     def get(self, request):
         logout(request)
-        return redirect('index')
+        return redirect('/')
 
 
 class AddCommentView(View):
@@ -122,7 +122,7 @@ class ConfirmDelateProductView(PermissionRequiredMixin, View):
     def post(self, request, pk):
         product = Product.objects.get(pk=pk)
         product.delete()
-        return redirect('show_all_products')
+        return redirect('/')
 
 
 class DelateCommentView(View):
@@ -139,7 +139,7 @@ class ConfirmDelateComment(View):
             product = Product.objects.get(comment=comment)
             return render(request, 'confirm_delate_comment.html', {'comment': comment, 'product': product})
         else:
-            return redirect('index')
+            return redirect('/')
 
     def post(self, request, pk):
         comment = Comment.objects.get(pk=pk)
@@ -174,6 +174,56 @@ class AboutMe(View):
     def get(self, request):
         return render(request, 'about_me.html')
 
+class Add(PermissionRequiredMixin, View):
+    permission_required = ['Shop_app.add_product']
+
+    def get(self, request):
+        return render(request, 'add.html')
+
+
+class AddCategory(PermissionRequiredMixin, View):
+    permission_required = ['Shop_app.add_product']
+
+    def get(self, request):
+        form = AddCategoryForm()
+        return render(request, 'form.html', {'form': form})
+
+    def post(self, request):
+        form = AddCategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add')
+        return render(request, 'form.html', {'form': form})
+
+
+class AddColor(PermissionRequiredMixin, View):
+    permission_required = ['Shop_app.add_product']
+
+    def get(self, request):
+        form = AddColorForm()
+        return render(request, 'form.html', {'form': form})
+
+    def post(self, request):
+        form = AddColorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add')
+        return render(request, 'form.html', {'form': form})
+
+
+class AddSize(PermissionRequiredMixin, View):
+    permission_required = ['Shop_app.add_product']
+
+    def get(self, request):
+        form = AddSizeForm()
+        return render(request, 'form.html', {'form': form})
+
+    def post(self, request):
+        form = AddSizeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('add')
+        return render(request, 'form.html', {'form': form})
 
 
 

@@ -16,14 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from Shop_app import views
-from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='base.html'), name='index'),
-    path('show_all_products/', views.ShowAllProducts.as_view(), name='show_all_products'),
+    path('', views.ShowAllProducts.as_view(), name='show_all_products'),
     path('add_product/', views.AddProduct.as_view(), name='add_product'),
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
@@ -36,5 +34,9 @@ urlpatterns = [
     path('confirm_delate_comment/<int:pk>/', views.ConfirmDelateComment.as_view(), name='confirm_delate_comment'),
     path('edit_product/<int:pk>', views.EditProduct.as_view(), name='edit_product'),
     path('my_shoppingcart/<int:pk>', views.ShowShoppingCart.as_view(), name='show_shoppingcart'),
-    path('about_me', views.AboutMe.as_view(), name='about_me'),
+    path('about_me/', views.AboutMe.as_view(), name='about_me'),
+    path('add/', views.Add.as_view(), name='add'),
+    path('add_category/', views.AddCategory.as_view(), name='add_category'),
+    path('add_color/', views.AddColor.as_view(), name='add_color'),
+    path('add_size/', views.AddSize.as_view(), name='add_size'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

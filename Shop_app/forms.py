@@ -1,17 +1,12 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from Shop_app.models import Product, Comment, Colors, Sizes, Categories
+from Shop_app.models import Product, Comment, Color, Size, Category
 from django.contrib.auth.models import User
 
 
 class AddNewProductForm(forms.ModelForm):
-    # name = forms.CharField(max_length=64)
-    # price = forms.DecimalField(max_digits=999, decimal_places=2)
-    # sale = forms.BooleanField()
-    # description = forms.Textarea()
-    # tags = forms.ChoiceField(Categories)
-    # color = forms.ChoiceField(Colors)
-    # available_size = forms.ChoiceField(Sizes)
+    tags = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), widget=forms.CheckboxSelectMultiple)
+    available_size = forms.ModelMultipleChoiceField(queryset=Size.objects.all(), widget=forms.CheckboxSelectMultiple)
     class Meta:
         model = Product
         fields = '__all__'
@@ -46,3 +41,24 @@ class AddCommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['text', 'vote']
+
+
+class AddCategoryForm(forms.ModelForm):
+
+    class Meta:
+        model = Category
+        fields = ['name']
+
+
+class AddSizeForm(forms.ModelForm):
+
+    class Meta:
+        model = Size
+        fields = ['size']
+
+
+class AddColorForm(forms.ModelForm):
+
+    class Meta:
+        model = Color
+        fields = ['name']
