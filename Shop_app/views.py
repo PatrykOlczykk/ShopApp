@@ -1,18 +1,22 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
-from Shop_app.models import Product, Comment
+from Shop_app.models import Product, Comment, Category, Size, Color
 from Shop_app.forms import AddNewProductForm, RegisterNewUserForm, LoginForm, AddCommentForm, AddSizeForm, AddColorForm, AddCategoryForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.core.paginator import Paginator
 
 
 class ShowAllProducts(View):
     def get(self, request):
+        p = Paginator(Product.objects.order_by('name'), 3)
+        page = request.GET.get('page')
+        products = p.get_page(page)
         product = Product.objects.order_by('name')
-        return render(request, 'Show_All_Products.html', {'product': product})
+        return render(request, 'Show_All_Products.html', {'product': product, 'products':products})
 
 
 class AddProduct(PermissionRequiredMixin, View):
@@ -178,7 +182,10 @@ class Add(PermissionRequiredMixin, View):
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
-        return render(request, 'add.html')
+        category = Category.objects.order_by('name')
+        size = Size.objects.order_by('size')
+        color = Color.objects.order_by('name')
+        return render(request, 'admin_panel.html', {'category': category, 'size': size, 'color': color})
 
 
 class AddCategory(PermissionRequiredMixin, View):

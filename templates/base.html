@@ -7,6 +7,7 @@
     <link href="{% static 'bootstrap-5.2.2-dist/css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
     <script src="{% static 'bootstrap-5.2.2-dist/js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
 </head>
 <body>
  <nav class="navbar navbar-expand-sm bg-light navbar-light">
@@ -17,7 +18,7 @@
       </li>
     {% if 'Shop_app.add_product' in perms %}
      <li class="nav-item">
-        <a class="nav-link" href="{% url 'add' %}">Add something</a>
+        <a class="nav-link" href="{% url 'admin_panel' %}">Admin panel</a>
       </li>
     {% endif %}
     {% if user.is_authenticated %}
@@ -35,7 +36,6 @@
     <li class="nav-item">
         <a class="nav-link active" href="{% url 'about_me' %}">Read about me!</a>
     </li>
-
     </ul>
   </div>
 </nav>
@@ -43,8 +43,6 @@
 {% block content %}
 {% endblock %}
 </div>
-
-<script type="text/javascript" src=" {% static 'js/cart.js' %}"></script>
 <div class="footer">
         <a class="nav-link active" href="https://github.com/PatrykOlczykk"><img src="{% static 'images/github.png' %}" width="200" target ="_blank"></a>
         <a class="nav-link active" href="https://github.com/PatrykOlczykk"><img src="{% static 'images/Linkedin.png' %}" width="200" target ="blank"></a>

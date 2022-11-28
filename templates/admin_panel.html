@@ -7,10 +7,22 @@
       <li class="nav-item">
         <a class="nav-link active" href="{% url 'add_category' %}">Add Category</a>
       </li>
+        <li class="list-group-item">Yours's categories:
+        {% for category in category %}
+            {{ category.name }}
+        {% endfor %} </li>
       <li class="nav-item">
         <a class="nav-link active" href="{% url 'add_color' %}">Add color</a>
       </li>
+        <li class="list-group-item">Yours's colors:
+        {% for color in color %}
+            {{ color.name }}
+        {% endfor %} </li>
       <li class="nav-item">
         <a class="nav-link active" href="{% url 'add_size' %}">Add Size</a>
       </li>
+        <li class="list-group-item">Yours's sizes:
+        {% for size in size %}
+            {{ size.size }}
+        {% endfor %} </li>
 {% endblock %}
