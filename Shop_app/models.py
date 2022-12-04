@@ -23,7 +23,6 @@ class Color(models.Model):
     def __str__(self):
         return self.name
 
-
 class Product(models.Model):
 
     name = models.CharField(max_length=64, unique=True)
@@ -34,6 +33,17 @@ class Product(models.Model):
     color = models.ForeignKey(Color, on_delete=models.CASCADE)
     available_size = models.ManyToManyField(Size)
     product_image = models.ImageField(null=True, blank=True, upload_to='images/')
+#django orm Count, Sum
+    @property
+    def score(self):
+        #self.commet_set.all()
+        comments = Comment.objects.filter(product=self)
+        product_score = 0
+        for comment in comments:
+            product_score += comment.vote
+        if product_score != 0:
+            product_score = product_score/comments.count()
+        return product_score
 
     def __str__(self):
         return self.name

@@ -10,13 +10,77 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.paginator import Paginator
 
 
-class ShowAllProducts(View):
+def is_valid_queryparm(parm):
+    return parm != '' and parm is not None
+
+# filtry
+# scooring
+# czemu nie mam w html podpowiedzi
+
+class ShowAllProductsView(View):
     def get(self, request):
-        p = Paginator(Product.objects.order_by('name'), 3)
+
+        qs = Product.objects.order_by('name')
+        categories = Category.objects.all()
+        sizes = Size.objects.all()
+        colors = Color.objects.all()
+        print(categories)
+
+
+        name_contains_query = request.GET.get('name_contains')
+        description_contains_query = request.GET.get('description_contains')
+        price_count_max = request.GET.get('PriceMax')
+        price_count_min = request.GET.get('PriceMin')
+        category = request.GET.get('Category')
+        size = request.GET.get('Size')
+        color = request.GET.get('Color')
+        sort_value = request.GET.get('sort')
+
+
+        if is_valid_queryparm(name_contains_query):
+            qs = qs.filter(name__icontains=name_contains_query)
+
+        if is_valid_queryparm(description_contains_query):
+            qs = qs.filter(name__icontains=description_contains_query)
+
+        if is_valid_queryparm(price_count_max):
+            qs = qs.filter(price__lt=price_count_max)
+
+        if is_valid_queryparm(price_count_min):
+            qs = qs.filter(price__gte=price_count_min)
+
+        if is_valid_queryparm(category) and category != 'Choose..':
+            qs = qs.filter(tags__name=category)
+
+        if is_valid_queryparm(size) and size != 'Choose...':
+            qs = qs.filter(size__name=size)
+
+        if is_valid_queryparm(color) and color != 'Choose...':
+            qs = qs.filter(color__name=color)
+
+        if is_valid_queryparm(sort_value) and sort_value == 'ATOZ':
+            qs = qs.order_by('name')
+
+        if is_valid_queryparm(sort_value) and sort_value == 'ZTOA':
+            qs = qs.order_by('-name')
+
+
+
+        p = Paginator(qs, 4)
         page = request.GET.get('page')
-        products = p.get_page(page)
-        product = Product.objects.order_by('name')
-        return render(request, 'Show_All_Products.html', {'product': product, 'products':products})
+        paginator = p.get_page(page)
+
+
+        context = {
+            'queryset': qs,
+            'paginator': paginator,
+            'categories': categories,
+            'sizes': sizes,
+            'colors': colors,
+            #'product_score': product_score_lis,
+        }
+
+        return render(request, 'show_all_products.html', context)
 
 
 class AddProduct(PermissionRequiredMixin, View):
@@ -54,7 +118,7 @@ class LoginView(View):
 
     def get(self, request):
         form = LoginForm()
-        return render (request, 'form.html', {'form': form})
+        return render(request, 'form.html', {'form': form})
 
     def post(self, request):
         form = LoginForm(request.POST)
@@ -104,9 +168,7 @@ class ShowDetailView(View):
             product_score += comment.vote
         if product_score != 0:
             product_score = product_score/comments.count()
-        pc = Product.color
-        pt = Product.tags
-        return render(request, 'detail_product.html', {'product': product, 'form': form, 'product_score': product_score, 'pc': pc, 'pt': pt})
+        return render(request, 'detail_product.html', {'product': product, 'form': form, 'product_score': product_score})
 
 
 class DelateProductView(PermissionRequiredMixin, View):
@@ -135,7 +197,7 @@ class DelateCommentView(View):
         return redirect(f'/confirm_delate_comment/{pk}')
 
 
-class ConfirmDelateComment(View):
+class ConfirmDelateCommentView(View):
 
     def get(self, request, pk):
         comment = Comment.objects.get(pk=pk)
@@ -151,7 +213,7 @@ class ConfirmDelateComment(View):
         product = Product.objects.get(comment=comment)
         return redirect(f'/detail_product/{product.pk}')
 
-class EditProduct(PermissionRequiredMixin, View):
+class EditProductView(PermissionRequiredMixin, View):
     permission_required = ['Shop_app.add_product']
 
     def get(self, request, pk):
@@ -167,18 +229,18 @@ class EditProduct(PermissionRequiredMixin, View):
             form.save()
             return redirect(f'/detail_product/{product.pk}')
 
-class ShowShoppingCart(View):
+class ShowShoppingCartView(View):
     def get(self, request):
         products = Product.objects.order_by('name')
         user = request.User
         return render(request, 'show_shopping_cart.html', {'products': products})
 
-class AboutMe(View):
+class AboutMeView(View):
 
     def get(self, request):
         return render(request, 'about_me.html')
 
-class Add(PermissionRequiredMixin, View):
+class AddView(PermissionRequiredMixin, View):
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
@@ -188,7 +250,7 @@ class Add(PermissionRequiredMixin, View):
         return render(request, 'admin_panel.html', {'category': category, 'size': size, 'color': color})
 
 
-class AddCategory(PermissionRequiredMixin, View):
+class AddCategoryView(PermissionRequiredMixin, View):
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
@@ -199,11 +261,11 @@ class AddCategory(PermissionRequiredMixin, View):
         form = AddCategoryForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('add')
+            return redirect('admin_panel')
         return render(request, 'form.html', {'form': form})
 
 
-class AddColor(PermissionRequiredMixin, View):
+class AddColorView(PermissionRequiredMixin, View):
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
@@ -214,11 +276,11 @@ class AddColor(PermissionRequiredMixin, View):
         form = AddColorForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('add')
+            return redirect('admin_panel')
         return render(request, 'form.html', {'form': form})
 
 
-class AddSize(PermissionRequiredMixin, View):
+class AddSizeView(PermissionRequiredMixin, View):
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
@@ -229,8 +291,7 @@ class AddSize(PermissionRequiredMixin, View):
         form = AddSizeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('add')
+            return redirect('admin_panel')
         return render(request, 'form.html', {'form': form})
 
-
-
+#class MyAccount(View):
