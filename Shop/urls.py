@@ -38,6 +38,8 @@ urlpatterns = [
     path('add_category/', views.AddCategoryView.as_view(), name='add_category'),
     path('add_color/', views.AddColorView.as_view(), name='add_color'),
     path('add_size/', views.AddSizeView.as_view(), name='add_size'),
-    path('', views.ShowAllProductsView.as_view(), name='show_all_products')
+    path('', views.ShowAllProductsView.as_view(), name='show_all_products'),
+    path('shopping_cart/', views.ShowShoppingCartView.as_view(), name='shopping_cart'),
+    path('update_cart/', views.UpdateCartView.as_view(), name='update_cart'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

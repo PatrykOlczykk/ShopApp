@@ -43,7 +43,7 @@ class Product(models.Model):
             product_score += comment.vote
         if product_score != 0:
             product_score = product_score/comments.count()
-        return product_score
+        return round(product_score, 2)
 
     def __str__(self):
         return self.name
@@ -71,9 +71,30 @@ class Comment(models.Model):
         return self.author
 
 
+class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=64, null=True)
+    email = models.CharField(max_length=64, null=True)
+
+
 class ShoppingCart(models.Model):
 
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=999, decimal_places=2)
-    products = models.ForeignKey(Product, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    completed = models.BooleanField(default=False)
+
+
+class ShoppingCartItems(models.Model):
+
+    cart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
+
+
+class ShippingAdress(models.Model):
+
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(ShoppingCart, on_delete=models.SET_NULL, null=True)
+    adress = models.CharField(max_length=64, null=False)
+    city = models.CharField(max_length=64, null=False)
+    zipcode = models.CharField(max_length=64, null=False)
 

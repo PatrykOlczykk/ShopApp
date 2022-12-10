@@ -1,21 +1,19 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views import View
-from Shop_app.models import Product, Comment, Category, Size, Color
+from Shop_app.models import Product, Comment, Category, Size, Color, ShippingAdress, ShoppingCartItems, ShoppingCart
 from Shop_app.forms import AddNewProductForm, RegisterNewUserForm, LoginForm, AddCommentForm, AddSizeForm, AddColorForm, AddCategoryForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.paginator import Paginator
-
+import json
 
 def is_valid_queryparm(parm):
     return parm != '' and parm is not None
 
-# filtry
-# scooring
-# czemu nie mam w html podpowiedzi
 
 class ShowAllProductsView(View):
     def get(self, request):
@@ -24,7 +22,6 @@ class ShowAllProductsView(View):
         categories = Category.objects.all()
         sizes = Size.objects.all()
         colors = Color.objects.all()
-        print(categories)
 
 
         name_contains_query = request.GET.get('name_contains')
@@ -34,7 +31,7 @@ class ShowAllProductsView(View):
         category = request.GET.get('Category')
         size = request.GET.get('Size')
         color = request.GET.get('Color')
-        sort_value = request.GET.get('sort')
+        sort_value = request.GET.get('Sort')
 
 
         if is_valid_queryparm(name_contains_query):
@@ -49,11 +46,11 @@ class ShowAllProductsView(View):
         if is_valid_queryparm(price_count_min):
             qs = qs.filter(price__gte=price_count_min)
 
-        if is_valid_queryparm(category) and category != 'Choose..':
+        if is_valid_queryparm(category) and category != 'Choose...':
             qs = qs.filter(tags__name=category)
 
         if is_valid_queryparm(size) and size != 'Choose...':
-            qs = qs.filter(size__name=size)
+            qs = qs.filter(available_size=size)
 
         if is_valid_queryparm(color) and color != 'Choose...':
             qs = qs.filter(color__name=color)
@@ -77,7 +74,6 @@ class ShowAllProductsView(View):
             'categories': categories,
             'sizes': sizes,
             'colors': colors,
-            #'product_score': product_score_lis,
         }
 
         return render(request, 'show_all_products.html', context)
@@ -233,7 +229,7 @@ class ShowShoppingCartView(View):
     def get(self, request):
         products = Product.objects.order_by('name')
         user = request.User
-        return render(request, 'show_shopping_cart.html', {'products': products})
+        return render(request, 'shopping_cart.html', {'products': products})
 
 class AboutMeView(View):
 
@@ -294,4 +290,32 @@ class AddSizeView(PermissionRequiredMixin, View):
             return redirect('admin_panel')
         return render(request, 'form.html', {'form': form})
 
-#class MyAccount(View):
+class ShowShoppingCartView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            customer = request.user.customer
+            shoppingCart, created = ShoppingCart.objects.get_or_create(customer=customer, completed=False)
+            items = shoppingCart.shoppingcartitems_set.all()
+        else:
+            items = []
+        return render(request, 'shopping_cart.html', {'items': items})
+
+class UpdateCartView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        productId = data['productId']
+        action = data['action']
+        print('Action', action)
+        print('productId', productId)
+
+        customer = request.user.customer
+        product = Product.objects.get(id=productId)
+
+        shoppingCart, created = ShoppingCart.objects.get_or_create(customer=customer, completed=False)
+        shoppingCartItem, created = ShoppingCartItems.objects.get_or_create(cart=shoppingCart, product=product)
+
+        if action == 'add':
+            shoppingCartItem.quantity += 1
+            shoppingCartItem.save()
+
+        return JsonResponse('Item added', safe=False)

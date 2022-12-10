@@ -13,7 +13,28 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="{% static "css/style.css" %}">
+<script type="text/javascript" src="{% static "cart.js" %}"></script>
+    <script>
 
+      let user = "{{request.user}}"
+
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+    </script>
 
       <h3>Filter Products</h3>
       <form method="GET" action=".">
@@ -60,8 +81,8 @@
             </select>
           </div>
           <div class="form-group col-md-4">
-            <label for="color">Color</label>
-            <select id="color" class="form-control" name="color" multiple>
+            <label for="Color">Color</label>
+            <select id="Color" class="form-control" name="Color" multiple>
               <option selected>Choose...</option>
               {% for color in colors %}
               <option value="{{ color }}">{{ color }}</option>
@@ -69,8 +90,8 @@
             </select>
           </div>
           <div class="form-group col-md-4">
-            <label for="size">Size</label>
-            <select id="size" class="form-control" name="size" multiple>
+            <label for="Size">Size</label>
+            <select id="Size" class="form-control" name="Size" multiple>
               <option selected>Choose...</option>
               {% for size in sizes %}
               <option value="{{ size }}">{{ size }}</option>
@@ -79,8 +100,8 @@
           </div>
 
             <div class="form-group col-md-4">
-            <label for="sort">Sort</label>
-            <select id="sort" class="form-control" name="sort">
+            <label for="Sort">Sort</label>
+            <select id="Sort" class="form-control" name="Sort">
               <option selected>Sort...</option>
               <option value="ATOZ">A to Z</option>
               <option value="ZTOA">Z to A</option>
@@ -122,19 +143,20 @@
          <div class="bottom-wrap-payment">
              <figcaption class="info-wrap">
                  <div class="row">
-                     <div class="col-md-9 col-xs-9"> <a href="#" class="title" data-abc="true">{{product.price}}$</a> <span class="rated">VISA Platinum</span> </div>
-                     <div class="col-md-3 col-xs-3">
-                         <div class="rating text-right"> #### 8787 </div>
-                     </div>
+                     <div class="col-md-9 col-xs-9"> <a href="#" class="title" data-abc="true">{{product.price}}$</a> <span class="rated"></span> </div>
                  </div>
              </figcaption>
          </div>
-         <div class="bottom-wrap"> <a href="#" class="btn btn-primary float-right" data-abc="true"> Buy now </a>
-             <div class="price-wrap"> <a href="#" class="btn btn-warning float-left" data-abc="true"> Cancel </a> </div>
+         <div class="bottom-wrap"> <a class="btn btn-primary float-right addtocart" data-action = "add" data-product="{{product.id}}"> Add to cart!</a>
+             <div class="price-wrap"> <a class="btn btn-warning float-left" data-abc="true"> Cancel </a> </div>
          </div>
      </figure>
  </div>
 {% endfor %}
+
+
+
+
 
 
 

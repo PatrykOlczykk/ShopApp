@@ -22,7 +22,7 @@ class RegisterNewUserForm(forms.ModelForm):
         help_texts = {
             'username': None,
         }
-        fields = ['username']
+        fields = ['username', 'email']
 
     def clean(self):
         cleaned_data = super().clean()
