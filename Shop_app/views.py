@@ -293,7 +293,7 @@ class AddSizeView(PermissionRequiredMixin, View):
 class ShowShoppingCartView(View):
     def get(self, request):
         if request.user.is_authenticated:
-            customer = request.user.customer
+            customer = request.user. customer
             shoppingCart, created = ShoppingCart.objects.get_or_create(customer=customer, completed=False)
             items = shoppingCart.shoppingcartitems_set.all()
         else:
