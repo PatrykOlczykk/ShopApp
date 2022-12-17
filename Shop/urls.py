@@ -32,7 +32,6 @@ urlpatterns = [
     path('delate_product/<int:pk>/', views.DelateCommentView.as_view(), name='delate_comment'),
     path('confirm_delate_comment/<int:pk>/', views.ConfirmDelateCommentView.as_view(), name='confirm_delate_comment'),
     path('edit_product/<int:pk>', views.EditProductView.as_view(), name='edit_product'),
-    path('my_shoppingcart/<int:pk>', views.ShowShoppingCartView.as_view(), name='show_shoppingcart'),
     path('about_me/', views.AboutMeView.as_view(), name='about_me'),
     path('admin_panel/', views.AddView.as_view(), name='admin_panel'),
     path('add_category/', views.AddCategoryView.as_view(), name='add_category'),

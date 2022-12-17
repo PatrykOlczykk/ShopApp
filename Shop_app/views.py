@@ -225,11 +225,6 @@ class EditProductView(PermissionRequiredMixin, View):
             form.save()
             return redirect(f'/detail_product/{product.pk}')
 
-class ShowShoppingCartView(View):
-    def get(self, request):
-        products = Product.objects.order_by('name')
-        user = request.User
-        return render(request, 'shopping_cart.html', {'products': products})
 
 class AboutMeView(View):
 
