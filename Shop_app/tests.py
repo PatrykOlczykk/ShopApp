@@ -115,77 +115,77 @@ def test_add_comment_without_permission(product_item):
     assert Comment.objects.count() == 0
 
 @pytest.mark.django_db
-def test_delate_product_get_with_permission(admin_client, product_item):
-    url = reverse('delate_product', args=(product_item.id,))
+def test_delete_product_get_with_permission(admin_client, product_item):
+    url = reverse('delete_product', args=(product_item.id,))
     response = admin_client.get(url)
     assert response.status_code == 302
 
 @pytest.mark.django_db
-def test_delate_product_get_without_permission(product_item):
-    url = reverse('delate_product', args=(product_item.id,))
+def test_delete_product_get_without_permission(product_item):
+    url = reverse('delete_product', args=(product_item.id,))
     response = client.get(url)
     assert response.status_code == 302
     assert Product.objects.count() == 1
 
 
 @pytest.mark.django_db
-def test_confirm_delate_product_get_without_permission(product_item):
-    url = reverse('confirm_delate_product', args=(product_item.id,))
+def test_confirm_delete_product_get_without_permission(product_item):
+    url = reverse('confirm_delete_product', args=(product_item.id,))
     response = client.get(url)
     assert response.status_code == 302
     assert Product.objects.count() == 1
 
 @pytest.mark.django_db
-def test_confirm_delate_product_get_with_permission(admin_client, product_item):
-    url = reverse('confirm_delate_product', args=(product_item.id,))
+def test_confirm_delete_product_get_with_permission(admin_client, product_item):
+    url = reverse('confirm_delete_product', args=(product_item.id,))
     response = admin_client.get(url)
     assert response.status_code == 200
     assert Product.objects.count() == 1
 
 
 @pytest.mark.django_db
-def test_confirm_delate_product_post_without_permission(product_item):
-    url = reverse('confirm_delate_product', args=(product_item.id,))
+def test_confirm_delete_product_post_without_permission(product_item):
+    url = reverse('confirm_delete_product', args=(product_item.id,))
     response = client.post(url)
     assert response.status_code == 302
     assert Product.objects.count() == 1
 
 @pytest.mark.django_db
-def test_confirm_delate_product_post_without_permission(admin_client, product_item):
-    url = reverse('confirm_delate_product', args=(product_item.id,))
+def test_confirm_delete_product_post_without_permission(admin_client, product_item):
+    url = reverse('confirm_delete_product', args=(product_item.id,))
     response = admin_client.post(url)
     assert response.status_code == 302
     assert Product.objects.count() == 0
 
 
 @pytest.mark.django_db
-def test_confirm_delate_comment_get_with_permission(author_comment, comment):
-    url = reverse('confirm_delate_comment', args=(comment.id,))
+def test_confirm_delete_comment_get_with_permission(author_comment, comment):
+    url = reverse('confirm_delete_comment', args=(comment.id,))
     client.force_login(author_comment)
     response = client.get(url)
     assert response.status_code == 200
     assert Comment.objects.count() == 1
 
 @pytest.mark.django_db
-def test_confirm_delate_comment_get_without_permission(user, comment):
+def test_confirm_delete_comment_get_without_permission(user, comment):
     client.force_login(user)
-    url = reverse('confirm_delate_comment', args=(comment.id,))
+    url = reverse('confirm_delete_comment', args=(comment.id,))
     response = client.get(url)
     assert response.status_code == 302
     assert Comment.objects.count() == 1
 
 @pytest.mark.django_db
-def test_confirm_delate_comment_post_with_permission(author_comment, comment):
-    url = reverse('confirm_delate_comment', args=(comment.id,))
+def test_confirm_delete_comment_post_with_permission(author_comment, comment):
+    url = reverse('confirm_delete_comment', args=(comment.id,))
     client.force_login(author_comment)
     response = client.post(url)
     assert response.status_code == 302
     assert Comment.objects.count() == 0
 
 @pytest.mark.django_db
-def test_confirm_delate_comment_post_without_permission(user, comment):
+def test_confirm_delete_comment_post_without_permission(user, comment):
     client.force_login(user)
-    url = reverse('confirm_delate_comment', args=(comment.id,))
+    url = reverse('confirm_delete_comment', args=(comment.id,))
     response = client.post(url)
     assert response.status_code == 302
     assert Comment.objects.count() == 1

@@ -19,7 +19,7 @@
         {% else %}
             <li class="list-group-item">Ocena użytkowników: {{ product_score }}</li>
         {% endif %}
-    <a href="{% url 'confirm_delate_product' product.id %}" class="btn btn-danger">Delate product</a>
+    <a href="{% url 'confirm_delete_product' product.id %}" class="btn btn-danger">Delete product</a>
     </ul>
     </div>
     <div>
@@ -28,8 +28,8 @@
         {% endif %}
     </div>
     </div>
-    {% if 'Shop_app.delate_product' in perms %}
-            <a href="{% url 'confirm_delate_product' product.id %}" class="btn btn-danger">Delate product</a>
+    {% if 'Shop_app.delete_product' in perms %}
+            <a href="{% url 'confirm_delete_product' product.id %}" class="btn btn-danger">Delete product</a>
             <a href="{% url 'edit_product' product.id %}" class="btn btn-secondary">Edit product</a>
     {% endif %}
     {% include 'comments.html' %}

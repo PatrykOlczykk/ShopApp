@@ -11,18 +11,28 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.paginator import Paginator
 import json
 
+
+
+
+
+
 def is_valid_queryparm(parm):
+
+    """This view return True if entered data is correct"""
+
     return parm != '' and parm is not None
 
 
 class ShowAllProductsView(View):
-    def get(self, request):
 
+    """This view shows list of product cards. It's possible to filter products by: price,
+    categories, color, available size. You can also sort products and change pages"""
+
+    def get(self, request):
         qs = Product.objects.order_by('name')
         categories = Category.objects.all()
         sizes = Size.objects.all()
         colors = Color.objects.all()
-
 
         name_contains_query = request.GET.get('name_contains')
         description_contains_query = request.GET.get('description_contains')
@@ -33,7 +43,6 @@ class ShowAllProductsView(View):
         color = request.GET.get('Color')
         sort_value = request.GET.get('Sort')
 
-
         if is_valid_queryparm(name_contains_query):
             qs = qs.filter(name__icontains=name_contains_query)
 
@@ -41,7 +50,7 @@ class ShowAllProductsView(View):
             qs = qs.filter(name__icontains=description_contains_query)
 
         if is_valid_queryparm(price_count_max):
-            qs = qs.filter(price__lt=price_count_max)
+            qs = qs.filter(price__lte=price_count_max)
 
         if is_valid_queryparm(price_count_min):
             qs = qs.filter(price__gte=price_count_min)
@@ -61,12 +70,9 @@ class ShowAllProductsView(View):
         if is_valid_queryparm(sort_value) and sort_value == 'ZTOA':
             qs = qs.order_by('-name')
 
-
-
         p = Paginator(qs, 4)
         page = request.GET.get('page')
         paginator = p.get_page(page)
-
 
         context = {
             'queryset': qs,
@@ -80,6 +86,9 @@ class ShowAllProductsView(View):
 
 
 class AddProduct(PermissionRequiredMixin, View):
+
+    """This view allows you to add products if you have a permission"""
+
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
@@ -95,6 +104,8 @@ class AddProduct(PermissionRequiredMixin, View):
 
 
 class RegisterUserView(View):
+
+    """This view allows you to create a new user. Password is hashed and cleaned"""
 
     def get(self, request):
         form = RegisterNewUserForm()
@@ -112,6 +123,8 @@ class RegisterUserView(View):
 
 class LoginView(View):
 
+    """This view allows you to log in if account is already exists"""
+
     def get(self, request):
         form = LoginForm()
         return render(request, 'form.html', {'form': form})
@@ -126,11 +139,13 @@ class LoginView(View):
             if user is not None:
                 login(request, user)
                 return redirect('/')
-            message = 'niepoprawne haslo lub/i login'
+            message = 'Wrong password/ username'
             return render(request, 'form.html', {'form': form, 'message': message})
 
 
 class LogoutView(View):
+
+    """This view allows you to log out if you are log in"""
 
     def get(self, request):
         logout(request)
@@ -138,6 +153,8 @@ class LogoutView(View):
 
 
 class AddCommentView(View):
+
+    """This view allows you to add a comment if you are log in"""
 
     def post(self, request, pk):
         form = AddCommentForm(request.POST)
@@ -155,6 +172,9 @@ class AddCommentView(View):
 
 class ShowDetailView(View):
 
+    """This view allows you to see the details of products and arithmetic average of comments.
+    You can see comments from other users"""
+
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
         form = AddCommentForm()
@@ -167,19 +187,25 @@ class ShowDetailView(View):
         return render(request, 'detail_product.html', {'product': product, 'form': form, 'product_score': product_score})
 
 
-class DelateProductView(PermissionRequiredMixin, View):
-    permission_required = ('Shop_app.delate_product')
+class DeleteProductView(PermissionRequiredMixin, View):
+
+    """This view redirects to a page where you confirm the removal of the product"""
+
+    permission_required = ('Shop_app.delete_product')
 
     def get(self, request, pk):
-        return redirect(f'/confirm_delate_product/{pk}')
+        return redirect(f'/confirm_delete_product/{pk}')
 
 
-class ConfirmDelateProductView(PermissionRequiredMixin, View):
-    permission_required = ['Shop_app.delate_product']
+class ConfirmDeleteProductView(PermissionRequiredMixin, View):
+
+    """This view allows you to delete products if you have a permission"""
+
+    permission_required = ['Shop_app.delete_product']
 
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
-        return render(request, 'confirm_delate_product.html', {'product': product})
+        return render(request, 'confirm_delete_product.html', {'product': product})
 
     def post(self, request, pk):
         product = Product.objects.get(pk=pk)
@@ -187,19 +213,23 @@ class ConfirmDelateProductView(PermissionRequiredMixin, View):
         return redirect('/')
 
 
-class DelateCommentView(View):
+class DeleteCommentView(View):
+
+    """This view redirects to the page where you confirm the deletion of your comment"""
 
     def get(self, request, pk):
-        return redirect(f'/confirm_delate_comment/{pk}')
+        return redirect(f'/confirm_delete_comment/{pk}')
 
 
-class ConfirmDelateCommentView(View):
+class ConfirmDeleteCommentView(View):
+
+    """This view allows you to delete a comment if you are the author"""
 
     def get(self, request, pk):
         comment = Comment.objects.get(pk=pk)
         if request.user == comment.author:
             product = Product.objects.get(comment=comment)
-            return render(request, 'confirm_delate_comment.html', {'comment': comment, 'product': product})
+            return render(request, 'confirm_delete_comment.html', {'comment': comment, 'product': product})
         else:
             return redirect('/')
 
@@ -209,7 +239,11 @@ class ConfirmDelateCommentView(View):
         product = Product.objects.get(comment=comment)
         return redirect(f'/detail_product/{product.pk}')
 
+
 class EditProductView(PermissionRequiredMixin, View):
+
+    """This view allows you to edit product if you have a permission"""
+
     permission_required = ['Shop_app.add_product']
 
     def get(self, request, pk):
@@ -228,10 +262,16 @@ class EditProductView(PermissionRequiredMixin, View):
 
 class AboutMeView(View):
 
+    """This view renders - 'About me' page"""
+
     def get(self, request):
         return render(request, 'about_me.html')
 
+
 class AddView(PermissionRequiredMixin, View):
+
+    """This view renders page where you to create: product, category, color, available size"""
+
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
@@ -242,6 +282,9 @@ class AddView(PermissionRequiredMixin, View):
 
 
 class AddCategoryView(PermissionRequiredMixin, View):
+
+    """This view allows you to add a category"""
+
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
@@ -257,6 +300,9 @@ class AddCategoryView(PermissionRequiredMixin, View):
 
 
 class AddColorView(PermissionRequiredMixin, View):
+
+    """This view allows you to add a color"""
+
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
@@ -272,6 +318,9 @@ class AddColorView(PermissionRequiredMixin, View):
 
 
 class AddSizeView(PermissionRequiredMixin, View):
+
+    """This view allows you to add an available size"""
+
     permission_required = ['Shop_app.add_product']
 
     def get(self, request):
@@ -285,7 +334,11 @@ class AddSizeView(PermissionRequiredMixin, View):
             return redirect('admin_panel')
         return render(request, 'form.html', {'form': form})
 
+
 class ShowShoppingCartView(View):
+
+    """This view shows the products you have added to your cart"""
+
     def get(self, request):
         if request.user.is_authenticated:
             customer = request.user. customer
@@ -295,7 +348,12 @@ class ShowShoppingCartView(View):
             items = []
         return render(request, 'shopping_cart.html', {'items': items})
 
+
 class UpdateCartView(View):
+
+    """This view takes data from the JSON.
+    Creates/ gets a shopping cart and adds products to basket"""
+
     def post(self, request):
         data = json.loads(request.body)
         productId = data['productId']

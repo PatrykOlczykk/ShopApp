@@ -15,8 +15,8 @@
             <p>Ocena: {{ comment.vote }}</p>
             <p>{{ comment.created }}</p>
                 {% if request.user == comment.author %}
-                    <p><a href="{% url 'confirm_delate_comment' comment.id %}"
-                    class="btn btn-danger">Delate comment</a></p>
+                    <p><a href="{% url 'confirm_delete_comment' comment.id %}"
+                    class="btn btn-danger">Delete comment</a></p>
                 {% endif %}
             </li>
         {% endfor %}
